@@ -190,22 +190,22 @@
     state: link
 
 - name: Create MediaCommons site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/mediacommons
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/mediacommons
 
 - name: Create ALT-AC site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/alt-ac
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/alt-ac
 
 - name: Create Fieldguide site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/fieldguide
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/fieldguide
 
 - name: Create IMR site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/imr
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/imr
 
 - name: Create [in]Transition site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/intransition
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/intransition
 
 - name: Create TNE site using MediaCommons core
-  command: cp -r /vagrant/source/mediacommons_core /vagrant/builds/tne
+  command: cp -rf /vagrant/source/mediacommons_core /vagrant/builds/tne
 
 - name: Make sure default directory exists
   file:
