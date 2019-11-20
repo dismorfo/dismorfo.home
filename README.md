@@ -1,4 +1,4 @@
-# Ansible Role: X virtual framebuffer
+# Ansible Role
 
 ## Requirements
 
