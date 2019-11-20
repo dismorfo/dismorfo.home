@@ -1,0 +1,90 @@
+{{ apache_global_vhost_settings }}
+
+{% for vhost in apache_vhosts %}
+<VirtualHost {{ apache_listen_ip }}:{{ apache_listen_port }}>
+  ServerName {{ vhost.servername }}
+  {% if vhost.proxy_pass is defined %}
+    {% for proxy_pass in vhost.proxy_pass %}
+      ProxyPass {{ proxy_pass.local }} {{ proxy_pass.proxy }}
+      ProxyPassReverse {{ proxy_pass.local }} {{ proxy_pass.proxy }}
+    {% endfor %}
+  {% endif %}
+  {% if vhost.serveralias is defined %}
+  ServerAlias {{ vhost.serveralias }}
+  {% endif %}
+  {% if vhost.documentroot is defined %}
+  DocumentRoot "{{ vhost.documentroot }}"
+  {% endif %}
+  {% if vhost.aliases is defined %}
+    {% for alias in vhost.aliases %}
+    Alias {{ alias.base }} {{ alias.directory }}
+    {% endfor %}
+    <Directory "{{ vhost.documentroot }}">
+      AllowOverride none
+      Require all granted
+    </Directory>
+    {% for alias in vhost.aliases %}
+    <Directory {{ alias.directory }}>
+      Include /etc/httpd/conf-available/drupal-main-htaccess.conf
+      # Various rewrite rules.
+      <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteBase {{ alias.base }}
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_URI} !=/favicon.ico
+        RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
+      </IfModule>
+    </Directory>
+    {% endfor %}
+    {% for alias in vhost.aliases %}
+    <Directory {{ alias.files }}>
+      Include /etc/httpd/conf-available/drupal-files-htaccess.conf
+    </Directory>
+    {% endfor %}
+  {% endif %}
+  {% if vhost.extra_parameters is defined %}
+    {{ vhost.extra_parameters }}
+  {% endif %}
+</VirtualHost>
+{% endfor %}
+
+<VirtualHost *:{{ apache_listen_port }}>
+  ServerName adminer.{{ vagrant_hostname }}
+  DocumentRoot "/opt/adminer"
+  <Directory "/opt/adminer">
+    AllowOverride All
+    Options -Indexes +FollowSymLinks
+    Require all granted
+  </Directory>
+  <FilesMatch \.php$>
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+  </FilesMatch>
+</VirtualHost>
+
+<VirtualHost *:{{ apache_listen_port }}>
+  ServerName dashboard.{{ vagrant_hostname }}
+  ServerAlias dashboard.{{ vagrant_hostname }}
+  DocumentRoot "/var/www/dashboard"
+  <Directory "/var/www/dashboard">
+    AllowOverride All
+    Options -Indexes +FollowSymLinks
+    Require all granted
+  </Directory>
+  <FilesMatch \.php$>
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+  </FilesMatch>
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName pimpmylog.{{ vagrant_hostname }}
+  DocumentRoot "/usr/share/php/pimpmylog"
+  <Directory "/usr/share/php/pimpmylog">
+    AllowOverride All
+    Options -Indexes +FollowSymLinks
+    Require all granted
+  </Directory>
+  <FilesMatch \.php$>
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+  </FilesMatch>
+</VirtualHost>

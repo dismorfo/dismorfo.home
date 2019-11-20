@@ -1,0 +1,16 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: dismorfo
+  description: Set Vagrant user variables
+  company: "New York University"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+        - all
+  galaxy_tags:
+    - development
+
